@@ -1,7 +1,169 @@
-<html>
-	<head>
-	</head>
-	<body>
-		Project 1 here
-	</body>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<style>
+  body {
+    padding: 100px;
+    width: 1000px;
+    margin: auto;
+    text-align: left;
+    font-weight: 300;
+    font-family: 'Open Sans', sans-serif;
+    color: #121212;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Source Sans Pro', sans-serif;
+  }
+</style>
+<title>CS 184 Rasterizer</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link href="https://fonts.googleapis.com/css?family=Open+Sans|Source+Sans+Pro" rel="stylesheet">
+</head>
+
+
+<body>
+
+<h1 align="middle">CS 184: Computer Graphics and Imaging, Spring 2023</h1>
+<h1 align="middle">Project 1: Rasterizer</h1>
+<h2 align="middle">William Louis and Amrita Rajan, CS184</h2>
+
+<br><br>
+
+<div>
+
+<h2 align="middle">Overview</h2>
+<p>Give a high-level overview of what you implemented in this project. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the project.</p>
+
+<h2 align="middle">Section I: Rasterization</h2>
+
+<h3 align="middle">Part 1: Rasterizing single-color triangles</h3>
+
+For this section, we created bounds for our triangle given our coordinates. Once we generate that box, we then iterate through each pixel in that box and sample it. 
+
+<p>Here is an example 2x2 gridlike structure using an HTML table. Each <b>tr</b> is a row and each <b>td</b> is a column in that row. You might find this useful for framing and showing your result images in an organized fashion.</p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/task1_writeup.png" align="middle" width="400px"/>
+        <figcaption align="middle">Image rendered using single-color triangle rasterization.</figcaption>
+      </td>
+    </tr>
+    <br>
+  </table>
+</div>
+
+
+<h3 align="middle">Part 2: Antialiasing triangles</h3>
+In this section, we use supersampling to make sure our aliasing artifacts go away. We sample our pixels as usual, but we break our samples down into smaller subsamples so that we fill our frame buffer. Our frame buffer will have a larger size now. Then we downsample these values by averaging the color values. So we end up having more jaggies in certain pictures and we want to get rid of them. We primarily slower iterations for the sampling part. But for the downsampling part, we were able to use the Color type to retrieve the color from the sample buffer. Then we downsample this by averaging and putting it back into our frame buffer.
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/task2_1.png" align="middle" width="400px"/>
+        <figcaption align="middle">Image rendered using antialising methods.</figcaption>
+      </td>
+      <td>
+        <img src="images/task2_4.png" align="middle" width="400px"/>
+        <figcaption align="middle">Image rendered using antialiasing methods.</figcaption>
+      </td>
+      <td>
+        <img src="images/task2_16.png" align="middle" width="400px"/>
+        <figcaption align="middle">Image rendered using antialiasing methods.</figcaption>
+      </td>
+    </tr>
+    <br>
+  </table>
+</div>
+
+<h3 align="middle">Part 3: Transforms</h3>
+In this section, we implement matrix transformations by filling in logic for scaling, translations, and rotations. These are all matrix multiplications done to the color pixel value matrices, so filling in the method logic given certain transformative values was the bulk of the work for this part.
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/new_robot.png" align="middle" width="400px"/>
+        <figcaption align="middle">This new robot is trying to hit a dance step, so I tweaked the original SVG by moving the leg a little bit.</figcaption>
+      </td>
+    </tr>
+    <br>
+  </table>
+</div>
+
+<h2 align="middle">Section II: Sampling</h2>
+
+<h3 align="middle">Part 4: Barycentric coordinates</h3>
+<p> For this section, we used a weighted average of different color gradients to generate a unique color for each pixel. This weighted average/gradient depends on the distance of each sampled pixel from the different vertices of the triangle. So each sampled pixel would have a unique color gradient, which is why the output image is kind of like a color wheel. </p>
+
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/task4_gradient.png" align="middle" width="400px"/>
+        <figcaption align="middle">Image rendered using barycentric coordinates.</figcaption>
+      </td>
+    </tr>
+    <br>
+  </table>
+</div>
+
+<h3 align="middle">Part 5: "Pixel sampling" for texture mapping</h3>
+<p> For this section, we sample from a texture image given to us. Every pixel's color that we determine can be sampled using either nearest-pixel or bilinear sampling. These images are also stored in the best resolution, so we only work with the 0th level here. We use both bilinear and nearest sampling in this section. Bilinear sampling involves using distances and weighted averages to sample a new point and pixel. Nearest sampling finds the closest pixel that maps to our computed u and v coordinates. </p>
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/onepixrate_nearest.png" align="middle" width="400px"/>
+        <figcaption align="middle">Image rendered with sample rate of 1 and nearest pixel sampling.</figcaption>
+      </td>
+      <td>
+        <img src="images/onepixrate_bilinear.png" align="middle" width="400px"/>
+        <figcaption align="middle">Image rendered with sample rate of 1 and bilinear pixel sampling.</figcaption>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <img src="images/16pixrate_nearest.png" align="middle" width="400px"/>
+        <figcaption align="middle">Image rendered with sample rate of 16 and bilinear pixel sampling.</figcaption>
+      </td>
+      <td>
+        <img src="images/16pixrate_bilinear.png" align="middle" width="400px"/>
+        <figcaption align="middle">Image rendered with sample rate of 16 and nearest pixel sampling.</figcaption>
+      </td>
+    </tr>
+    <br>
+  </table>
+</div>
+<p>We are able to see that with bilinear pixel interpolation, we are able to have less aliasing. When the pixel rates are more higher and there are pointy edges and potential for jaggies, then bilinear interpolation will outdo nearest pixel sampling.</p>
+
+<h3 align="middle">Part 6: "Level sampling" with mipmaps for texture mapping</h3>
+<p> For this section, we sample from different mipmap levels within our frame rendering. So certain pixels can use resolutions and color values from differing mipmap levels. So depending on the texture level sampling method we use, our frame at the end can have differing resolutions throughout from any level. A picture can either sample from higher resolutions at the lower levels or have lower resolutions from higher levels.</p>
+<div align="middle">
+  <table style="width=100%">
+    <tr>
+      <td>
+        <img src="images/L0_NEAREST.png" align="middle" width="400px"/>
+        <figcaption align="middle">Image rendered with sample rate of 1 and nearest pixel sampling + level 0 sampling.</figcaption>
+      </td>
+      <td>
+        <img src="images/L0_LINEAR.png" align="middle" width="400px"/>
+        <figcaption align="middle">Image rendered with sample rate of 1 and bilinear pixel sampling + level 0 sampling.</figcaption>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <img src="images/NEARESTLEVEL_LINEAR.png" align="middle" width="400px"/>
+        <figcaption align="middle">Image rendered with sample rate of 16 and bilinear pixel sampling + nearest level sampling.</figcaption>
+      </td>
+      <td>
+        <img src="images/NEARESTLEVEL_NEAREST.png" align="middle" width="400px"/>
+        <figcaption align="middle">Image rendered with sample rate of 16 and nearest pixel sampling + nearest level sampling.</figcaption>
+      </td>
+    </tr>
+    <br>
+  </table>
+</div>
+<p>Some tradeoffs that come with using an increased number of samples per pixel include increased memory consumption and increased algorithmic time to iterate through more samples. With level sampling, there is more mathematical computation required to find coordinates.</p>
+</body>
 </html>
